@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "vscode-css-languageservice": "^3.0.3",
-    "vscode-languageserver": "^3.5.0"
+    "vscode-languageserver": "^3.5.1"
   },
   "devDependencies": {
     "@types/node": "7.0.43"
