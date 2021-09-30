@@ -12,7 +12,7 @@
   "main": "./out/javascriptMain",
   "dependencies": {
     "jsonc-parser": "^1.0.0",
-    "request-light": "^0.2.2",
+    "request-light": "^0.5.4",
     "vscode-nls": "^3.1.2"
   },
   "scripts": {
