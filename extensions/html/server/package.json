@@ -10,7 +10,7 @@
   "dependencies": {
     "vscode-css-languageservice": "^3.0.3",
     "vscode-html-languageservice": "^2.0.14",
-    "vscode-languageserver": "^3.5.0",
+    "vscode-languageserver": "^3.5.1",
     "vscode-nls": "^3.1.2",
     "vscode-uri": "^1.0.1"
   },
