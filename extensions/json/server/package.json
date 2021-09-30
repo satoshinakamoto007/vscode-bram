@@ -8,7 +8,7 @@
     "node": "*"
   },
   "dependencies": {
-    "jsonc-parser": "^1.0.0",
+    "jsonc-parser": "^1.0.3",
     "request-light": "^0.2.2",
     "vscode-json-languageservice": "^3.0.4",
     "vscode-languageserver": "^3.5.0",
