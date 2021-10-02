@@ -52,9 +52,10 @@ gulp-replace@^0.5.4:
     readable-stream "^2.0.1"
     replacestream "^4.0.0"
 
-highlight.js@9.5.0:
-  version "9.5.0"
-  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.5.0.tgz#46ae51b9db00f70052bcdf196cd404757b6582ae"
+highlight.js@9.18.5:
+  version "9.18.5"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.18.5.tgz#d18a359867f378c138d6819edfc2a8acd5f29825"
+  integrity sha512-a5bFyofd/BHCX52/8i8uJkjr9DYwXIPnM/plwI6W7ezItLGqzt7X2G2nXuYSfsIJdkwwj/g9DG1LkcGJI/dDoA==
 
 inherits@~2.0.3:
   version "2.0.3"
