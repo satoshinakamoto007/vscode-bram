@@ -6,21 +6,11 @@
   version "8.0.33"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.33.tgz#1126e94374014e54478092830704f6ea89df04cd"
 
-applicationinsights@0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-0.18.0.tgz#162ebb48a383408bc4de44db32b417307f45bbc1"
-
-vscode-extension-telemetry@0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/vscode-extension-telemetry/-/vscode-extension-telemetry-0.0.8.tgz#2261bff986b6690a6f1f746a45ac5bd1f85d29e0"
-  dependencies:
-    applicationinsights "0.18.0"
-    winreg "1.2.3"
+vscode-extension-telemetry@0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/vscode-extension-telemetry/-/vscode-extension-telemetry-0.4.0.tgz#5dd434d2f07460497ce2cd40d2e3416090867d8b"
+  integrity sha512-9/vCfLuEWlDPqtgPo4jXUJsOCyjbVD72fSXsXY1TpJ4htiTAUoBa7fDAi7hxHOLDvIQI3BMFUlOxsV5jILq2ig==
 
 vscode-nls@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/vscode-nls/-/vscode-nls-3.1.2.tgz#c1b63f4338ac49c852267633dd99717916424a74"
-
-winreg@1.2.3:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/winreg/-/winreg-1.2.3.tgz#93ad116b2696da87d58f7265a8fcea5254a965d5"
