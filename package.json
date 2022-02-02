@@ -59,7 +59,7 @@
     "prefetch-headers": "node build/prefetchHeaders.js"
   },
   "dependencies": {
-    "@microsoft/applicationinsights-web": "^2.6.4",
+    "@microsoft/applicationinsights-web": "^2.7.2",
     "@parcel/watcher": "2.0.5",
     "@vscode/sqlite3": "4.0.12",
     "@vscode/sudo-prompt": "9.3.1",
