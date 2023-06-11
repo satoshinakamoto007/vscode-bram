@@ -12,7 +12,7 @@
   "dependencies": {
     "vscode-css-languageservice": "^5.1.9",
     "vscode-languageserver": "^7.0.0",
-    "vscode-uri": "^3.0.2"
+    "vscode-uri": "^3.0.7"
   },
   "devDependencies": {
     "@types/mocha": "^8.2.0",
