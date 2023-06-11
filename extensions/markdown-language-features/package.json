@@ -357,7 +357,7 @@
     "markdown-it-front-matter": "^0.2.1",
     "morphdom": "^2.6.1",
     "vscode-extension-telemetry": "0.4.3",
-    "vscode-nls": "^5.0.0"
+    "vscode-nls": "^5.2.0"
   },
   "devDependencies": {
     "@types/dompurify": "^2.3.1",
