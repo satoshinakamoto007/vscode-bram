@@ -509,7 +509,7 @@
     "@emmetio/math-expression": "^1.0.4",
     "@vscode/emmet-helper": "^2.3.0",
     "image-size": "~1.0.0",
-    "vscode-languageserver-textdocument": "^1.0.1"
+    "vscode-languageserver-textdocument": "^1.0.9"
   },
   "capabilities": {
     "virtualWorkspaces": true,
