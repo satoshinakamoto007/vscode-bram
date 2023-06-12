@@ -10862,10 +10862,10 @@ xterm-headless@4.16.0-beta.8:
   resolved "https://registry.yarnpkg.com/xterm-headless/-/xterm-headless-4.16.0-beta.8.tgz#f129f09771a69d617ff2c2fb9c9a790b826a749b"
   integrity sha512-aYSOBToT710RCqFHPzGmcijldoX2IFGkWMCmDr2qtmjQwUyKer3nXJQrTf2yWIRQVE7KSKfkbpOLsfx6UFmn+Q==
 
-xterm@4.16.0-beta.8:
-  version "4.16.0-beta.8"
-  resolved "https://registry.yarnpkg.com/xterm/-/xterm-4.16.0-beta.8.tgz#ff55015fa568e5a66e12f9dfa511a633b944e438"
-  integrity sha512-PNXTQt8s6aXX5TUmZJkC2sOxFCYgjU3QgUjze/j/WAB5kBVZtFFxADb9ATZbhbogXzkgD0TRgcl3Rk3rCxJSuQ==
+xterm@4.19.0:
+  version "4.19.0"
+  resolved "https://registry.yarnpkg.com/xterm/-/xterm-4.19.0.tgz#c0f9d09cd61de1d658f43ca75f992197add9ef6d"
+  integrity sha512-c3Cp4eOVsYY5Q839dR5IejghRPpxciGmLWWaP9g+ppfMeBChMeLa1DCA+pmX/jyDZ+zxFOmlJL/82qVdayVoGQ==
 
 y18n@^3.2.1:
   version "3.2.2"
