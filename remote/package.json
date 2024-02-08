@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@microsoft/applicationinsights-web": "^2.6.4",
+    "@microsoft/applicationinsights-web": "^2.8.16",
     "@parcel/watcher": "2.0.5",
     "@vscode/vscode-languagedetection": "1.0.21",
     "applicationinsights": "1.4.2",
