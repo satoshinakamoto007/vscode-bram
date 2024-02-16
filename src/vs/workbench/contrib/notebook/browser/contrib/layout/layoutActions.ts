@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { localize } from 'vs/nls';
+import { localize2 } from 'vs/nls';
 import { Action2, MenuId, registerAction2 } from 'vs/platform/actions/common/actions';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
@@ -16,7 +16,7 @@ export class ToggleCellToolbarPositionAction extends Action2 {
 	constructor() {
 		super({
 			id: TOGGLE_CELL_TOOLBAR_POSITION,
-			title: { value: localize('notebook.toggleCellToolbarPosition', "Toggle Cell Toolbar Position"), original: 'Toggle Cell Toolbar Position' },
+			title: localize2('notebook.toggleCellToolbarPosition', 'Toggle Cell Toolbar Position'),
 			menu: [{
 				id: MenuId.NotebookCellTitle,
 				group: 'View',
@@ -45,14 +45,14 @@ export class ToggleCellToolbarPositionAction extends Action2 {
 			if (['left', 'right', 'hidden'].indexOf(toolbarPosition) >= 0) {
 				// valid position
 				const newViewValue = toolbarPosition === 'right' ? 'left' : 'right';
-				let config: { [key: string]: string } = {
+				const config: { [key: string]: string } = {
 					default: toolbarPosition
 				};
 				config[viewType] = newViewValue;
 				return config;
 			} else {
 				// invalid position
-				let config: { [key: string]: string } = {
+				const config: { [key: string]: string } = {
 					default: 'right',
 				};
 				config[viewType] = 'left';
@@ -61,7 +61,7 @@ export class ToggleCellToolbarPositionAction extends Action2 {
 		} else {
 			const oldValue = toolbarPosition[viewType] ?? toolbarPosition['default'] ?? 'right';
 			const newViewValue = oldValue === 'right' ? 'left' : 'right';
-			let newConfig = {
+			const newConfig = {
 				...toolbarPosition
 			};
 			newConfig[viewType] = newViewValue;

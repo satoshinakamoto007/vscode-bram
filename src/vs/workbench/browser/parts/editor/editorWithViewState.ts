@@ -11,7 +11,7 @@ import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
+import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfiguration';
 import { IEditorGroupsService, IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IExtUri } from 'vs/base/common/resources';
@@ -208,7 +208,9 @@ export abstract class AbstractEditorWithViewState<T extends object> extends Edit
 	 *
 	 * @param resource the expected `URI` for the view state. This
 	 * should be used as a way to ensure the view state in the
-	 * editor control is matching the resource expected.
+	 * editor control is matching the resource expected, for example
+	 * by comparing with the underlying model (this was a fix for
+	 * https://github.com/microsoft/vscode/issues/40114).
 	 */
 	protected abstract computeEditorViewState(resource: URI): T | undefined;
 

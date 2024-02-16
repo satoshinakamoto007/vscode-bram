@@ -8,9 +8,10 @@ import { DisposableStore, dispose, IDisposable } from 'vs/base/common/lifecycle'
 import { URI, UriComponents } from 'vs/base/common/uri';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { extHostNamedCustomer } from 'vs/workbench/api/common/extHostCustomers';
+import { extHostNamedCustomer, IExtHostContext } from 'vs/workbench/services/extensions/common/extHostCustomers';
 import { IFileMatch, IFileQuery, IRawFileMatch2, ISearchComplete, ISearchCompleteStats, ISearchProgressItem, ISearchResultProvider, ISearchService, ITextQuery, QueryType, SearchProviderType } from 'vs/workbench/services/search/common/search';
-import { ExtHostContext, ExtHostSearchShape, IExtHostContext, MainContext, MainThreadSearchShape } from '../common/extHost.protocol';
+import { ExtHostContext, ExtHostSearchShape, MainContext, MainThreadSearchShape } from '../common/extHost.protocol';
+import { revive } from 'vs/base/common/marshalling';
 
 @extHostNamedCustomer(MainContext.MainThreadSearch)
 export class MainThreadSearch implements MainThreadSearchShape {
@@ -94,9 +95,7 @@ class SearchOperation {
 			this.matches.set(match.resource.toString(), match);
 		}
 
-		if (this.progress) {
-			this.progress(match);
-		}
+		this.progress?.(match);
 	}
 }
 
@@ -162,10 +161,7 @@ class RemoteSearchProvider implements ISearchResultProvider, IDisposable {
 
 		dataOrUri.forEach(result => {
 			if ((<IRawFileMatch2>result).results) {
-				searchOp.addMatch({
-					resource: URI.revive((<IRawFileMatch2>result).resource),
-					results: (<IRawFileMatch2>result).results
-				});
+				searchOp.addMatch(revive((<IRawFileMatch2>result)));
 			} else {
 				searchOp.addMatch({
 					resource: URI.revive(<UriComponents>result)

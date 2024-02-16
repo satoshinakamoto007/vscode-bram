@@ -5,14 +5,16 @@
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { IBufferCell } from 'xterm';
+import { IBufferCell } from '@xterm/xterm';
 
 export type XtermAttributes = Omit<IBufferCell, 'getWidth' | 'getChars' | 'getCode'> & { clone?(): XtermAttributes };
 
 export interface IXtermCore {
 	viewport?: {
+		readonly scrollBarWidth: number;
 		_innerRefresh(): void;
 	};
+	_onData: IEventEmitter<string>;
 	_onKey: IEventEmitter<{ key: string }>;
 
 	_charSizeService: {
@@ -30,13 +32,19 @@ export interface IXtermCore {
 
 	_renderService: {
 		dimensions: {
-			actualCellWidth: number;
-			actualCellHeight: number;
+			css: {
+				cell: {
+					width: number;
+					height: number;
+				}
+			}
 		},
 		_renderer: {
-			_renderLayers?: any[];
+			value?: {
+				_renderLayers?: any[];
+			}
 		};
-		_onIntersectionChange: any;
+		_handleIntersectionChange: any;
 	};
 }
 

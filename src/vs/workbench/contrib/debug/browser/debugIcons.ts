@@ -18,7 +18,8 @@ export const loadedScriptsViewIcon = registerIcon('loaded-scripts-view-icon', Co
 export const breakpoint = {
 	regular: registerIcon('debug-breakpoint', Codicon.debugBreakpoint, localize('debugBreakpoint', 'Icon for breakpoints.')),
 	disabled: registerIcon('debug-breakpoint-disabled', Codicon.debugBreakpointDisabled, localize('debugBreakpointDisabled', 'Icon for disabled breakpoints.')),
-	unverified: registerIcon('debug-breakpoint-unverified', Codicon.debugBreakpointUnverified, localize('debugBreakpointUnverified', 'Icon for unverified breakpoints.'))
+	unverified: registerIcon('debug-breakpoint-unverified', Codicon.debugBreakpointUnverified, localize('debugBreakpointUnverified', 'Icon for unverified breakpoints.')),
+	pending: registerIcon('debug-breakpoint-pending', Codicon.debugBreakpointPending, localize('debugBreakpointPendingOnTrigger', 'Icon for breakpoints waiting on another breakpoint.')),
 };
 export const functionBreakpoint = {
 	regular: registerIcon('debug-breakpoint-function', Codicon.debugBreakpointFunction, localize('debugBreakpointFunction', 'Icon for function breakpoints.')),
@@ -75,6 +76,7 @@ export const debugCollapseAll = registerIcon('debug-collapse-all', Codicon.colla
 export const callstackViewSession = registerIcon('callstack-view-session', Codicon.bug, localize('callstackViewSession', 'Icon for the session icon in the call stack view.'));
 export const debugConsoleClearAll = registerIcon('debug-console-clear-all', Codicon.clearAll, localize('debugConsoleClearAll', 'Icon for the clear all action in the debug console.'));
 export const watchExpressionsRemoveAll = registerIcon('watch-expressions-remove-all', Codicon.closeAll, localize('watchExpressionsRemoveAll', 'Icon for the Remove All action in the watch view.'));
+export const watchExpressionRemove = registerIcon('watch-expression-remove', Codicon.removeClose, localize('watchExpressionRemove', 'Icon for the Remove action in the watch view.'));
 export const watchExpressionsAdd = registerIcon('watch-expressions-add', Codicon.add, localize('watchExpressionsAdd', 'Icon for the add action in the watch view.'));
 export const watchExpressionsAddFuncBreakpoint = registerIcon('watch-expressions-add-function-breakpoint', Codicon.add, localize('watchExpressionsAddFuncBreakpoint', 'Icon for the add function breakpoint action in the watch view.'));
 
@@ -83,3 +85,5 @@ export const breakpointsActivate = registerIcon('breakpoints-activate', Codicon.
 
 export const debugConsoleEvaluationInput = registerIcon('debug-console-evaluation-input', Codicon.arrowSmallRight, localize('debugConsoleEvaluationInput', 'Icon for the debug evaluation input marker.'));
 export const debugConsoleEvaluationPrompt = registerIcon('debug-console-evaluation-prompt', Codicon.chevronRight, localize('debugConsoleEvaluationPrompt', 'Icon for the debug evaluation prompt.'));
+
+export const debugInspectMemory = registerIcon('debug-inspect-memory', Codicon.fileBinary, localize('debugInspectMemory', 'Icon for the inspect memory action.'));

@@ -8,8 +8,8 @@ import { DisposableStore } from 'vs/base/common/lifecycle';
 import { URI } from 'vs/base/common/uri';
 import { IBulkEditService } from 'vs/editor/browser/services/bulkEditService';
 import { TrackedRangeStickiness } from 'vs/editor/common/model';
-import { IModelService } from 'vs/editor/common/services/modelService';
-import { ILanguageService } from 'vs/editor/common/services/languageService';
+import { IModelService } from 'vs/editor/common/services/model';
+import { ILanguageService } from 'vs/editor/common/languages/language';
 import { ITextModelService } from 'vs/editor/common/services/resolverService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { TestConfigurationService } from 'vs/platform/configuration/test/common/testConfigurationService';
@@ -19,15 +19,22 @@ import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService
 import { IUndoRedoService } from 'vs/platform/undoRedo/common/undoRedo';
 import { insertCellAtIndex, runDeleteAction } from 'vs/workbench/contrib/notebook/browser/controller/cellOperations';
 import { NotebookEventDispatcher } from 'vs/workbench/contrib/notebook/browser/viewModel/eventDispatcher';
-import { NotebookViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/notebookViewModel';
+import { NotebookViewModel } from 'vs/workbench/contrib/notebook/browser/viewModel/notebookViewModelImpl';
 import { ViewContext } from 'vs/workbench/contrib/notebook/browser/viewModel/viewContext';
 import { NotebookTextModel } from 'vs/workbench/contrib/notebook/common/model/notebookTextModel';
 import { CellKind, diff } from 'vs/workbench/contrib/notebook/common/notebookCommon';
-import { NotebookOptions } from 'vs/workbench/contrib/notebook/common/notebookOptions';
+import { NotebookOptions } from 'vs/workbench/contrib/notebook/browser/notebookOptions';
 import { ICellRange } from 'vs/workbench/contrib/notebook/common/notebookRange';
 import { NotebookEditorTestModel, setupInstantiationService, withTestNotebook } from 'vs/workbench/contrib/notebook/test/browser/testNotebookEditor';
+import { INotebookExecutionStateService } from 'vs/workbench/contrib/notebook/common/notebookExecutionStateService';
+import { IBaseCellEditorOptions } from 'vs/workbench/contrib/notebook/browser/notebookBrowser';
+import { ensureNoDisposablesAreLeakedInTestSuite } from 'vs/base/test/common/utils';
+import { mainWindow } from 'vs/base/browser/window';
+import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 
 suite('NotebookViewModel', () => {
+	ensureNoDisposablesAreLeakedInTestSuite();
+
 	let disposables: DisposableStore;
 	let instantiationService: TestInstantiationService;
 	let textModelService: ITextModelService;
@@ -35,6 +42,7 @@ suite('NotebookViewModel', () => {
 	let undoRedoService: IUndoRedoService;
 	let modelService: IModelService;
 	let languageService: ILanguageService;
+	let notebookExecutionStateService: INotebookExecutionStateService;
 
 	suiteSetup(() => {
 		disposables = new DisposableStore();
@@ -44,6 +52,7 @@ suite('NotebookViewModel', () => {
 		undoRedoService = instantiationService.get(IUndoRedoService);
 		modelService = instantiationService.get(IModelService);
 		languageService = instantiationService.get(ILanguageService);
+		notebookExecutionStateService = instantiationService.get(INotebookExecutionStateService);
 
 		instantiationService.stub(IConfigurationService, new TestConfigurationService());
 		instantiationService.stub(IThemeService, new TestThemeService());
@@ -52,11 +61,18 @@ suite('NotebookViewModel', () => {
 	suiteTeardown(() => disposables.dispose());
 
 	test('ctor', function () {
-		const notebook = new NotebookTextModel('notebook', URI.parse('test'), [], {}, { transientCellMetadata: {}, transientDocumentMetadata: {}, transientOutputs: false }, undoRedoService, modelService, languageService);
+		const notebook = new NotebookTextModel('notebook', URI.parse('test'), [], {}, { transientCellMetadata: {}, transientDocumentMetadata: {}, transientOutputs: false, cellContentMetadata: {} }, undoRedoService, modelService, languageService);
 		const model = new NotebookEditorTestModel(notebook);
-		const viewContext = new ViewContext(new NotebookOptions(instantiationService.get(IConfigurationService)), new NotebookEventDispatcher());
-		const viewModel = new NotebookViewModel('notebook', model.notebook, viewContext, null, { isReadOnly: false }, instantiationService, bulkEditService, undoRedoService, textModelService);
+		const options = new NotebookOptions(mainWindow, instantiationService.get(IConfigurationService), instantiationService.get(INotebookExecutionStateService), instantiationService.get(ICodeEditorService), false);
+		const eventDispatcher = new NotebookEventDispatcher();
+		const viewContext = new ViewContext(options, eventDispatcher, () => ({} as IBaseCellEditorOptions));
+		const viewModel = new NotebookViewModel('notebook', model.notebook, viewContext, null, { isReadOnly: false }, instantiationService, bulkEditService, undoRedoService, textModelService, notebookExecutionStateService);
 		assert.strictEqual(viewModel.viewType, 'notebook');
+		notebook.dispose();
+		model.dispose();
+		options.dispose();
+		eventDispatcher.dispose();
+		viewModel.dispose();
 	});
 
 	test('insert/delete', async function () {
@@ -75,6 +91,9 @@ suite('NotebookViewModel', () => {
 				assert.strictEqual(viewModel.length, 2);
 				assert.strictEqual(viewModel.notebookDocument.cells.length, 2);
 				assert.strictEqual(viewModel.getCellIndex(cell), -1);
+
+				cell.dispose();
+				cell.model.dispose();
 			}
 		);
 	});
@@ -90,17 +109,22 @@ suite('NotebookViewModel', () => {
 				const lastViewCell = viewModel.cellAt(viewModel.length - 1)!;
 
 				const insertIndex = viewModel.getCellIndex(firstViewCell) + 1;
-				const cell = insertCellAtIndex(viewModel, insertIndex, 'var c = 3;', 'javascript', CellKind.Code, {}, [], true);
+				const cell = insertCellAtIndex(viewModel, insertIndex, 'var c = 3;', 'javascript', CellKind.Code, {}, [], true, true);
 
 				const addedCellIndex = viewModel.getCellIndex(cell);
 				runDeleteAction(editor, viewModel.cellAt(addedCellIndex)!);
 
 				const secondInsertIndex = viewModel.getCellIndex(lastViewCell) + 1;
-				const cell2 = insertCellAtIndex(viewModel, secondInsertIndex, 'var d = 4;', 'javascript', CellKind.Code, {}, [], true);
+				const cell2 = insertCellAtIndex(viewModel, secondInsertIndex, 'var d = 4;', 'javascript', CellKind.Code, {}, [], true, true);
 
 				assert.strictEqual(viewModel.length, 3);
 				assert.strictEqual(viewModel.notebookDocument.cells.length, 3);
 				assert.strictEqual(viewModel.getCellIndex(cell2), 2);
+
+				cell.dispose();
+				cell.model.dispose();
+				cell2.dispose();
+				cell2.model.dispose();
 			}
 		);
 	});
@@ -132,6 +156,8 @@ function getVisibleCells<T>(cells: T[], hiddenRanges: ICellRange[]) {
 }
 
 suite('NotebookViewModel Decorations', () => {
+	ensureNoDisposablesAreLeakedInTestSuite();
+
 	test('tracking range', async function () {
 		await withTestNotebook(
 			[
@@ -149,7 +175,7 @@ suite('NotebookViewModel Decorations', () => {
 					end: 2,
 				});
 
-				insertCellAtIndex(viewModel, 0, 'var d = 6;', 'javascript', CellKind.Code, {}, [], true);
+				const cell1 = insertCellAtIndex(viewModel, 0, 'var d = 6;', 'javascript', CellKind.Code, {}, [], true, true);
 				assert.deepStrictEqual(viewModel.getTrackedRange(trackedId!), {
 					start: 2,
 
@@ -163,7 +189,7 @@ suite('NotebookViewModel Decorations', () => {
 					end: 2
 				});
 
-				insertCellAtIndex(viewModel, 3, 'var d = 7;', 'javascript', CellKind.Code, {}, [], true);
+				const cell2 = insertCellAtIndex(viewModel, 3, 'var d = 7;', 'javascript', CellKind.Code, {}, [], true, true);
 				assert.deepStrictEqual(viewModel.getTrackedRange(trackedId!), {
 					start: 1,
 
@@ -183,6 +209,11 @@ suite('NotebookViewModel Decorations', () => {
 
 					end: 1
 				});
+
+				cell1.dispose();
+				cell1.model.dispose();
+				cell2.dispose();
+				cell2.model.dispose();
 			}
 		);
 	});
@@ -206,14 +237,14 @@ suite('NotebookViewModel Decorations', () => {
 					end: 3
 				});
 
-				insertCellAtIndex(viewModel, 5, 'var d = 9;', 'javascript', CellKind.Code, {}, [], true);
+				insertCellAtIndex(viewModel, 5, 'var d = 9;', 'javascript', CellKind.Code, {}, [], true, true);
 				assert.deepStrictEqual(viewModel.getTrackedRange(trackedId!), {
 					start: 1,
 
 					end: 3
 				});
 
-				insertCellAtIndex(viewModel, 4, 'var d = 10;', 'javascript', CellKind.Code, {}, [], true);
+				insertCellAtIndex(viewModel, 4, 'var d = 10;', 'javascript', CellKind.Code, {}, [], true, true);
 				assert.deepStrictEqual(viewModel.getTrackedRange(trackedId!), {
 					start: 1,
 
@@ -264,13 +295,11 @@ suite('NotebookViewModel Decorations', () => {
 			return original.indexOf(a) >= 0;
 		}), [{ start: 1, deleteCount: 1, toInsert: [2, 6] }]);
 	});
-
-	test('hidden ranges', async function () {
-
-	});
 });
 
 suite('NotebookViewModel API', () => {
+	ensureNoDisposablesAreLeakedInTestSuite();
+
 	test('#115432, get nearest code cell', async function () {
 		await withTestNotebook(
 			[

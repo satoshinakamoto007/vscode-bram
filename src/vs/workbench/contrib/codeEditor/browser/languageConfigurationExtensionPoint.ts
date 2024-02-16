@@ -8,15 +8,16 @@ import { ParseError, parse, getNodeType } from 'vs/base/common/json';
 import { IJSONSchema } from 'vs/base/common/jsonSchema';
 import * as types from 'vs/base/common/types';
 import { URI } from 'vs/base/common/uri';
-import { CharacterPair, CommentRule, EnterAction, ExplicitLanguageConfiguration, FoldingRules, IAutoClosingPair, IAutoClosingPairConditional, IndentAction, IndentationRule, OnEnterRule } from 'vs/editor/common/modes/languageConfiguration';
-import { LanguageConfigurationRegistry } from 'vs/editor/common/modes/languageConfigurationRegistry';
-import { ILanguageService } from 'vs/editor/common/services/languageService';
+import { CharacterPair, CommentRule, EnterAction, ExplicitLanguageConfiguration, FoldingMarkers, FoldingRules, IAutoClosingPair, IAutoClosingPairConditional, IndentAction, IndentationRule, OnEnterRule } from 'vs/editor/common/languages/languageConfiguration';
+import { ILanguageConfigurationService } from 'vs/editor/common/languages/languageConfigurationRegistry';
+import { ILanguageService } from 'vs/editor/common/languages/language';
 import { Extensions, IJSONContributionRegistry } from 'vs/platform/jsonschemas/common/jsonContributionRegistry';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { ITextMateService } from 'vs/workbench/services/textMate/common/textMateService';
 import { getParseErrorMessage } from 'vs/base/common/jsonErrorMessages';
-import { IExtensionResourceLoaderService } from 'vs/workbench/services/extensionResourceLoader/common/extensionResourceLoader';
+import { IExtensionResourceLoaderService } from 'vs/platform/extensionResourceLoader/common/extensionResourceLoader';
+import { hash } from 'vs/base/common/hash';
+import { Disposable } from 'vs/base/common/lifecycle';
 
 interface IRegExp {
 	pattern: string;
@@ -43,6 +44,9 @@ interface IOnEnterRule {
 	action: IEnterAction;
 }
 
+/**
+ * Serialized form of a language configuration
+ */
 interface ILanguageConfiguration {
 	comments?: CommentRule;
 	brackets?: CharacterPair[];
@@ -51,7 +55,13 @@ interface ILanguageConfiguration {
 	colorizedBracketPairs?: Array<CharacterPair>;
 	wordPattern?: string | IRegExp;
 	indentationRules?: IIndentationRules;
-	folding?: FoldingRules;
+	folding?: {
+		offSide?: boolean;
+		markers?: {
+			start?: string | IRegExp;
+			end?: string | IRegExp;
+		};
+	};
 	autoCloseBefore?: string;
 	onEnterRules?: IOnEnterRule[];
 }
@@ -76,42 +86,53 @@ function isCharacterPair(something: CharacterPair | null): boolean {
 	);
 }
 
-export class LanguageConfigurationFileHandler {
+export class LanguageConfigurationFileHandler extends Disposable {
 
-	private _done: Set<string>;
+	/**
+	 * A map from language id to a hash computed from the config files locations.
+	 */
+	private readonly _done = new Map<string, number>();
 
 	constructor(
-		@ITextMateService textMateService: ITextMateService,
 		@ILanguageService private readonly _languageService: ILanguageService,
 		@IExtensionResourceLoaderService private readonly _extensionResourceLoaderService: IExtensionResourceLoaderService,
-		@IExtensionService private readonly _extensionService: IExtensionService
+		@IExtensionService private readonly _extensionService: IExtensionService,
+		@ILanguageConfigurationService private readonly _languageConfigurationService: ILanguageConfigurationService,
 	) {
-		this._done = new Set<string>();
+		super();
 
-		// Listen for hints that a language configuration is needed/usefull and then load it once
-		this._languageService.onDidEncounterLanguage((languageIdentifier) => {
+		this._register(this._languageService.onDidRequestBasicLanguageFeatures(async (languageIdentifier) => {
 			// Modes can be instantiated before the extension points have finished registering
 			this._extensionService.whenInstalledExtensionsRegistered().then(() => {
 				this._loadConfigurationsForMode(languageIdentifier);
 			});
-		});
-		textMateService.onDidEncounterLanguage((languageId) => {
-			this._loadConfigurationsForMode(languageId);
-		});
+		}));
+		this._register(this._languageService.onDidChange(() => {
+			// reload language configurations as necessary
+			for (const [languageId] of this._done) {
+				this._loadConfigurationsForMode(languageId);
+			}
+		}));
 	}
 
-	private _loadConfigurationsForMode(languageId: string): void {
-		if (this._done.has(languageId)) {
+	private async _loadConfigurationsForMode(languageId: string): Promise<void> {
+		const configurationFiles = this._languageService.getConfigurationFiles(languageId);
+		const configurationHash = hash(configurationFiles.map(uri => uri.toString()));
+
+		if (this._done.get(languageId) === configurationHash) {
 			return;
 		}
-		this._done.add(languageId);
+		this._done.set(languageId, configurationHash);
 
-		const configurationFiles = this._languageService.getConfigurationFiles(languageId);
-		configurationFiles.forEach((configFileLocation) => this._handleConfigFile(languageId, configFileLocation));
+		const configs = await Promise.all(configurationFiles.map(configFile => this._readConfigFile(configFile)));
+		for (const config of configs) {
+			this._handleConfig(languageId, config);
+		}
 	}
 
-	private _handleConfigFile(languageId: string, configFileLocation: URI): void {
-		this._extensionResourceLoaderService.readExtensionResource(configFileLocation).then((contents) => {
+	private async _readConfigFile(configFileLocation: URI): Promise<ILanguageConfiguration> {
+		try {
+			const contents = await this._extensionResourceLoaderService.readExtensionResource(configFileLocation);
 			const errors: ParseError[] = [];
 			let configuration = <ILanguageConfiguration>parse(contents, errors);
 			if (errors.length) {
@@ -121,10 +142,11 @@ export class LanguageConfigurationFileHandler {
 				console.error(nls.localize('formatError', "{0}: Invalid format, JSON object expected.", configFileLocation.toString()));
 				configuration = {};
 			}
-			this._handleConfig(languageId, configuration);
-		}, (err) => {
+			return configuration;
+		} catch (err) {
 			console.error(err);
-		});
+			return {};
+		}
 	}
 
 	private _extractValidCommentRule(languageId: string, configuration: ILanguageConfiguration): CommentRule | undefined {
@@ -375,10 +397,13 @@ export class LanguageConfigurationFileHandler {
 		const indentationRules = (configuration.indentationRules ? this._mapIndentationRules(languageId, configuration.indentationRules) : undefined);
 		let folding: FoldingRules | undefined = undefined;
 		if (configuration.folding) {
-			const markers = configuration.folding.markers;
+			const rawMarkers = configuration.folding.markers;
+			const startMarker = (rawMarkers && rawMarkers.start ? this._parseRegex(languageId, `folding.markers.start`, rawMarkers.start) : undefined);
+			const endMarker = (rawMarkers && rawMarkers.end ? this._parseRegex(languageId, `folding.markers.end`, rawMarkers.end) : undefined);
+			const markers: FoldingMarkers | undefined = (startMarker && endMarker ? { start: startMarker, end: endMarker } : undefined);
 			folding = {
 				offSide: configuration.folding.offSide,
-				markers: markers ? { start: new RegExp(markers.start), end: new RegExp(markers.end) } : undefined
+				markers
 			};
 		}
 		const onEnterRules = this._extractValidOnEnterRules(languageId, configuration);
@@ -397,7 +422,7 @@ export class LanguageConfigurationFileHandler {
 			__electricCharacterSupport: undefined,
 		};
 
-		LanguageConfigurationRegistry.register(languageId, richEditConfig, 50);
+		this._languageConfigurationService.register(languageId, richEditConfig, 50);
 	}
 
 	private _parseRegex(languageId: string, confPath: string, value: string | IRegExp): RegExp | undefined {
@@ -514,7 +539,7 @@ const schema: IJSONSchema = {
 		},
 		brackets: {
 			default: [['(', ')'], ['[', ']'], ['{', '}']],
-			description: nls.localize('schema.brackets', 'Defines the bracket symbols that increase or decrease the indentation.'),
+			markdownDescription: nls.localize('schema.brackets', 'Defines the bracket symbols that increase or decrease the indentation. When bracket pair colorization is enabled and {0} is not defined, this also defines the bracket pairs that are colorized by their nesting level.', '\`colorizedBracketPairs\`'),
 			type: 'array',
 			items: {
 				$ref: '#/definitions/bracketPair'
@@ -522,7 +547,7 @@ const schema: IJSONSchema = {
 		},
 		colorizedBracketPairs: {
 			default: [['(', ')'], ['[', ']'], ['{', '}']],
-			description: nls.localize('schema.colorizedBracketPairs', 'Defines the bracket pairs that are colorized by their nesting level if bracket pair colorization is enabled.'),
+			markdownDescription: nls.localize('schema.colorizedBracketPairs', 'Defines the bracket pairs that are colorized by their nesting level if bracket pair colorization is enabled. Any brackets included here that are not included in {0} will be automatically included in {0}.', '\`brackets\`'),
 			type: 'array',
 			items: {
 				$ref: '#/definitions/bracketPair'
@@ -803,5 +828,5 @@ const schema: IJSONSchema = {
 
 	}
 };
-let schemaRegistry = Registry.as<IJSONContributionRegistry>(Extensions.JSONContribution);
+const schemaRegistry = Registry.as<IJSONContributionRegistry>(Extensions.JSONContribution);
 schemaRegistry.registerSchema(schemaId, schema);
