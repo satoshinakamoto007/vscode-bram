@@ -201,10 +201,10 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
-dompurify@^3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.0.5.tgz#eb3d9cfa10037b6e73f32c586682c4b2ab01fbed"
-  integrity sha512-F9e6wPGtY+8KNMRAVfxeCOHU0/NPWMSENNq4pQctuXRqqdEPW7q3CrLbR5Nse044WwacyjHGOMlvNsBe1y6z9A==
+dompurify@^3.0.9:
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.0.10.tgz#d48b7c5cef8f368fca380c6fbd9aa8d9f3ca0dcb"
+  integrity sha512-WZDL8ZHTliEVP3Lk4phtvjg8SNQ3YMc5WVstxE8cszKZrFjzI4PF4ZTIk9VGAc9vZADO7uGO2V/ZiStcRSAT4Q==
 
 entities@~2.1.0:
   version "2.1.0"
