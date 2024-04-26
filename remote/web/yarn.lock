@@ -78,10 +78,10 @@
   resolved "https://registry.yarnpkg.com/@xterm/addon-webgl/-/addon-webgl-0.17.0-beta.31.tgz#15dfea4583ff9b65f1a442e5cdba1d1638adb05f"
   integrity sha512-wqbBDDppwQ4R8o0YgnyFL8Pai2mVZqHb3E097vkFLB5Fw2hNx2dys3MgiXriSGXaUABKM3usVdZyouL6QgWdxQ==
 
-"@xterm/xterm@5.4.0-beta.31":
-  version "5.4.0-beta.31"
-  resolved "https://registry.yarnpkg.com/@xterm/xterm/-/xterm-5.4.0-beta.31.tgz#ff0bb3af9b00b0dfc73e84075f4218440c9886be"
-  integrity sha512-EpCtaYqMhJSyZrGY2sJVZeRCIRrANKtv1GGTj+IQPvk6hTiJHGrFHLM0tZ0dj0l3z65tLoOdj6EzJnjzX3Pqjw==
+"@xterm/xterm@5.5.0":
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/@xterm/xterm/-/xterm-5.5.0.tgz#275fb8f6e14afa6e8a0c05d4ebc94523ff775396"
+  integrity sha512-hqJHYaQb5OptNunnyAnkHyM8aCjZ1MEIDTQu1iIbbTD/xops91NB5yq1ZK/dC2JDbVWtF23zUtl9JE2NqwT87A==
 
 jschardet@3.0.0:
   version "3.0.0"
