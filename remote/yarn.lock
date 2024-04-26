@@ -139,10 +139,10 @@
   resolved "https://registry.yarnpkg.com/@xterm/addon-unicode11/-/addon-unicode11-0.7.0-beta.31.tgz#e1a6e965638ee6cb59b8b0777387037c42582d4b"
   integrity sha512-wrZLt2s6Yjmpe4nh0Sp6DKji0EoHod7V6ABfWBf8krjmEGSleE+GSb+ZwDOMsNzLJLmxoq1e6glHcVixG1z7WQ==
 
-"@xterm/addon-webgl@0.17.0-beta.31":
-  version "0.17.0-beta.31"
-  resolved "https://registry.yarnpkg.com/@xterm/addon-webgl/-/addon-webgl-0.17.0-beta.31.tgz#15dfea4583ff9b65f1a442e5cdba1d1638adb05f"
-  integrity sha512-wqbBDDppwQ4R8o0YgnyFL8Pai2mVZqHb3E097vkFLB5Fw2hNx2dys3MgiXriSGXaUABKM3usVdZyouL6QgWdxQ==
+"@xterm/addon-webgl@0.18.0":
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/@xterm/addon-webgl/-/addon-webgl-0.18.0.tgz#9e927cee10af971595fb2a72fd4c3bc2819f0096"
+  integrity sha512-xCnfMBTI+/HKPdRnSOHaJDRqEpq2Ugy8LEj9GiY4J3zJObo3joylIFaMvzBwbYRg8zLtkO0KQaStCeSfoaI2/w==
 
 "@xterm/headless@5.4.0-beta.31":
   version "5.4.0-beta.31"
