@@ -129,10 +129,10 @@
   resolved "https://registry.yarnpkg.com/@xterm/addon-search/-/addon-search-0.14.0-beta.31.tgz#e6edcd257f5a66bca7e92e62684132b604fb817d"
   integrity sha512-SS4CdgciLT98Uc4Dq0IjJegHcGIjGaASTcMtVkNBx9dOat9xt6lCXmtgUUj5w0KlB8nUfKrcy5T6fHgzrOzvrw==
 
-"@xterm/addon-serialize@0.12.0-beta.31":
-  version "0.12.0-beta.31"
-  resolved "https://registry.yarnpkg.com/@xterm/addon-serialize/-/addon-serialize-0.12.0-beta.31.tgz#daec32b94d45afcd662351d7689cb1b19eb24db7"
-  integrity sha512-MZ24pw33qOJrHdA6tlvwE4dSSpmIp/H9ZKtbiWZvuxVsY/hfYYPOluBQiCsOiYT7bZ8gQub2OOBX3jyMoZVxnQ==
+"@xterm/addon-serialize@0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@xterm/addon-serialize/-/addon-serialize-0.13.0.tgz#f6e687708cacae67c4fc717fad37b9d11065897b"
+  integrity sha512-kGs8o6LWAmN1l2NpMp01/YkpxbmO4UrfWybeGu79Khw5K9+Krp7XhXbBTOTc3GJRRhd6EmILjpR8k5+odY39YQ==
 
 "@xterm/addon-unicode11@0.7.0-beta.31":
   version "0.7.0-beta.31"
