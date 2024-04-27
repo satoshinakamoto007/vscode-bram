@@ -144,10 +144,10 @@
   resolved "https://registry.yarnpkg.com/@xterm/addon-webgl/-/addon-webgl-0.17.0-beta.31.tgz#15dfea4583ff9b65f1a442e5cdba1d1638adb05f"
   integrity sha512-wqbBDDppwQ4R8o0YgnyFL8Pai2mVZqHb3E097vkFLB5Fw2hNx2dys3MgiXriSGXaUABKM3usVdZyouL6QgWdxQ==
 
-"@xterm/headless@5.4.0-beta.31":
-  version "5.4.0-beta.31"
-  resolved "https://registry.yarnpkg.com/@xterm/headless/-/headless-5.4.0-beta.31.tgz#7727c5c79d3b1b8e59526cf51c75148e13f61694"
-  integrity sha512-AIMP0ZZozxtvilVTKqquNPYDE5RuKINTsYjOcWzYvjpg7sS75/Tn/RBx20KfZN8Z2oCCwVgj+1mudrV0W4JmMw==
+"@xterm/headless@5.5.0":
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/@xterm/headless/-/headless-5.5.0.tgz#823e76994b01cc5bfe69f2c2cba08095ee928aa0"
+  integrity sha512-5xXB7kdQlFBP82ViMJTwwEc3gKCLGKR/eoxQm4zge7GPBl86tCdI0IdPJjoKd8mUSFXz5V7i/25sfsEkP4j46g==
 
 "@xterm/xterm@5.4.0-beta.31":
   version "5.4.0-beta.31"
