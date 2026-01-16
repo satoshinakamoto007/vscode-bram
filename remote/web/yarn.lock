@@ -53,10 +53,10 @@
   resolved "https://registry.yarnpkg.com/@xterm/addon-canvas/-/addon-canvas-0.6.0-beta.31.tgz#17cc7d9968ede411fb23db11813b495435c068a0"
   integrity sha512-jm/7FWZOgnAGG7MXjr0W4SnuIzsag+oVpyf6wAD9UlCgq5HBuk/3kJ5mYGiGR7CpdTxqXmzyBk3OhQe8npZ1aQ==
 
-"@xterm/addon-image@0.7.0-beta.29":
-  version "0.7.0-beta.29"
-  resolved "https://registry.yarnpkg.com/@xterm/addon-image/-/addon-image-0.7.0-beta.29.tgz#276b56007c9009e7a59605dc3809c280e7d637ed"
-  integrity sha512-Z5JCuhl0AcwQA+DE/kQMeSSHZbfwJVLUUBodDeujVItQrcpc9vA8mxf/qIwS3XTA/tPbFihfc/CE9zL7OFdbaw==
+"@xterm/addon-image@0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@xterm/addon-image/-/addon-image-0.9.0.tgz#3a12c8fe5bdb05457b955f36d4ce8372d8cb3035"
+  integrity sha512-oYWA8/QAr5/Emwl1xL7WCoOqeG3IZfpzEz/OVq1j4Oi9934TQmHiyubClikRf0D/jL3JNiNuz/Lsqx0kXQ02BA==
 
 "@xterm/addon-search@0.14.0-beta.31":
   version "0.14.0-beta.31"
